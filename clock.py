@@ -5,8 +5,11 @@ import datetime
 import keyboard
 from asciicanvas import AsciiCanvas
 
-BORDER_CHARACTER = '~'
-FILL_CHARACTER = 'fill'
+BORDER_CHARACTER = '?'
+FILL_CHARACTER = '#'
+HAND_CHARACTER_HOUR = ' '
+HAND_CHARACTER_MIN = ' '
+HAND_CHARACTER_SECOND = ' '
 
 
 
@@ -18,7 +21,7 @@ def draw_second_hand(ascii_canvas, seconds, length, fill_char):
     y0 = int(math.ceil(ascii_canvas.lines / 2.0))
     x1 = x0 + int(math.cos((seconds + 45) * 6 * math.pi / 180) * length * x_scale_ratio)
     y1 = y0 + int(math.sin((seconds + 45) * 6 * math.pi / 180) * length)
-    ascii_canvas.add_line(int(x0), int(y0), int(x1), int(y1), fill_char=fill_char)
+    ascii_canvas.add_line(int(x0), int(y0), int(x1), int(y1), fill_char=HAND_CHARACTER_SECOND)
 
 
 def draw_minute_hand(ascii_canvas, minutes, length, fill_char):
@@ -29,7 +32,7 @@ def draw_minute_hand(ascii_canvas, minutes, length, fill_char):
     y0 = int(math.ceil(ascii_canvas.lines / 2.0))
     x1 = x0 + int(math.cos((minutes + 45) * 6 * math.pi / 180) * length * x_scale_ratio)
     y1 = y0 + int(math.sin((minutes + 45) * 6 * math.pi / 180) * length)
-    ascii_canvas.add_line(int(x0), int(y0), int(x1), int(y1), fill_char=fill_char)
+    ascii_canvas.add_line(int(x0), int(y0), int(x1), int(y1), fill_char=HAND_CHARACTER_MIN)
 
 
 def draw_hour_hand(ascii_canvas, hours, minutes, length, fill_char):
@@ -41,7 +44,7 @@ def draw_hour_hand(ascii_canvas, hours, minutes, length, fill_char):
     total_hours = hours + minutes / 60.0
     x1 = x0 + int(math.cos((total_hours + 45) * 30 * math.pi / 180) * length * x_scale_ratio)
     y1 = y0 + int(math.sin((total_hours + 45) * 30 * math.pi / 180) * length)
-    ascii_canvas.add_line(int(x0), int(y0), int(x1), int(y1), fill_char=fill_char)
+    ascii_canvas.add_line(int(x0), int(y0), int(x1), int(y1), fill_char=HAND_CHARACTER_HOUR)
 
 
 def draw_clock_face(ascii_canvas, radius, mark_char):
@@ -133,7 +136,7 @@ count = 0
 lines = 50
 cols = int(lines * x_scale_ratio)
 
-def test(a):
+def speedUp(param):
 
   global sleepTime, count
   if count > 50:
@@ -148,7 +151,7 @@ def test(a):
 
   sleepTime = round(newTime, 8)
 
-keyboard.on_press_key("p", test)
+keyboard.on_press_key("p", speedUp)
 
 
 while True:
