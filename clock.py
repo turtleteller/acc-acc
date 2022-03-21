@@ -6,7 +6,7 @@ import keyboard
 from asciicanvas import AsciiCanvas
 
 BORDER_CHARACTER = '?'
-FILL_CHARACTER = '#'
+FILL_CHARACTER = '*'
 HAND_CHARACTER_HOUR = ' '
 HAND_CHARACTER_MIN = ' '
 HAND_CHARACTER_SECOND = ' '
@@ -105,15 +105,11 @@ def draw_clock(cols, lines, now):
     firstText = 'No'
     secondText = 'No'
 
-    print(hours)
-
     if hours == '16' and minutes == '24':
       firstText = 'Yes'
       secondText = 'Yes'
       os.system('color B')
 
-
-    print(seconds)
     if center_x > 25:
         left_pos = int(radius * x_scale_ratio) / 2 - 10
         ascii_canvas.add_nine_patch_rect(int(center_x + left_pos), int(center_y - 1), 5, 3, single_line_border_chars)
@@ -128,39 +124,40 @@ def draw_clock(cols, lines, now):
     ascii_canvas.print_out()
 
 
-x_scale_ratio = 2
-initTime = time.time()
-sleepTime = 1.0
-count = 0
+globalTime = time.time() # current time in seconds (eg. 1647790151.79)
+sleepDuration = 1.0 # clock updates every second
+count = 0 # number of time the key is pressed
 
-lines = 50
-cols = int(lines * x_scale_ratio)
 
 def speedUp(param):
 
-  global sleepTime, count
+  global sleepDuration, count
   if count > 50:
-    print('Cant go faster')
+  # not going faster
     return
-  print('new sleep time: ', sleepTime)
-  print('key pressed', count)
-  newTime = sleepTime * 0.95
+
+  newSleepDuration = sleepDuration * 0.9 # clock update time is shorten
   count += 1
+  sleepDuration = round(newSleepDuration, 8) # 8 number after decimal
 
-  
-
-  sleepTime = round(newTime, 8)
-
-keyboard.on_press_key("p", speedUp)
+keyboard.on_press_key("p", speedUp) # Press key 'p' to count +1
 
 
 while True:
+# loop forever
 
-  timeResult = initTime + 1 # Add 1 hour for timezone
+  # We have time in seconds. So we add one second. Convert it to object, then from object to a readable string 
 
-  result = time.strftime("%H:%M:%S", time.localtime(timeResult))
-  os.system('cls' if os.name == 'nt' else 'clear')
-  draw_clock(cols, lines, timeResult)
-  initTime = timeResult
+  timeResultSeconds = globalTime + 1 # +1 second to current time (as normal manual clock)
+  timeResultObject = time.localtime(timeResultSeconds) # .localtime converts time in second to time 'object'
 
-  time.sleep(sleepTime)
+  result = time.strftime("%H:%M:%S", timeResultObject) # .strftime formats the date from object, to a readable string
+  os.system('clear') # erase clock in terminal everytime function is looping
+
+  print(result)
+  globalTime = timeResultSeconds
+
+  time.sleep(sleepDuration)
+
+
+
